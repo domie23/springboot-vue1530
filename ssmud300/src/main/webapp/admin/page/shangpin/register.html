@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>后台管理-注册</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<style>
+			html, body {width: 100%;height: 100%;overflow: hidden}
+        body {background: #009688;}
+        body:after {content:'';background-repeat:no-repeat;background-size:cover;-webkit-filter:blur(3px);-moz-filter:blur(3px);-o-filter:blur(3px);-ms-filter:blur(3px);filter:blur(3px);position:absolute;top:0;left:0;right:0;bottom:0;z-index:-1;}
+        .layui-container {width: 100%;height: 100%;overflow: hidden}
+        .admin-login-background {width:360px;height:300px;position:absolute;left:50%;top:40%;margin-left:-180px;margin-top:-100px;}
+        .logo-title {text-align:center;letter-spacing:2px;padding:14px 0;}
+        .logo-title h1 {color:#009688;font-size:25px;font-weight:bold;}
+        .login-form {background-color:#fff;border:1px solid #fff;border-radius:3px;padding:14px 20px;box-shadow:0 0 8px #eeeeee;}
+        .login-form .layui-form-item {position:relative;}
+        .login-form .layui-form-item label {position:absolute;left:1px;top:1px;width:38px;line-height:36px;text-align:center;color:#d2d2d2;}
+        .login-form .layui-form-item input {padding-left:36px;}
+        .captcha {width:60%;display:inline-block;}
+        .captcha-img {display:inline-block;width:34%;float:right;}
+        .captcha-img img {height:34px;border:1px solid #e6e6e6;height:36px;width:100%;}
+    </style>
+	</head>
+	<body>
+		<div id="app" class="layui-container">
+			<div class="admin-login-background">
+				<div class="layui-form login-form">
+					<form class="layui-form" action="">
+						<div class="layui-form-item logo-title">
+							<h1>商品注册</h1>
+						</div>
+																		<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">名称：</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" id="mingcheng" name="mingcheng" placeholder="请输入名称" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+																																																																														<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">产地：</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" id="chandi" name="chandi" placeholder="请输入产地" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+																																																																														<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">赞：</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" id="thumbsupnum" name="thumbsupnum" placeholder="请输入赞" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+																								<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">踩：</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" id="crazilynum" name="crazilynum" placeholder="请输入踩" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+																																										<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">点击次数：</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" id="clicknum" name="clicknum" placeholder="请输入点击次数" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+																																										<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">价格：</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" id="price" name="price" placeholder="请输入价格" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+																								<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">单限：</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" id="onelimittimes" name="onelimittimes" placeholder="请输入单限" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+																								<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">库存：</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" id="alllimittimes" name="alllimittimes" placeholder="请输入库存" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+																								<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">经度：</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" id="longitude" name="longitude" placeholder="请输入经度" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+																								<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">纬度：</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" id="latitude" name="latitude" placeholder="请输入纬度" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+																								<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">地址：</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" id="fulladdress" name="fulladdress" placeholder="请输入地址" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+																		<div class="layui-form-item">
+							<button class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="register">注 册</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<script src="../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js" charset="utf-8"></script>
+		<script src="../../js/menu.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			layui.use(['layer', 'element', 'form', 'http', 'jquery'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var form = layui.form;
+				var http = layui.http;
+				var jquery = layui.jquery;
+
+				var tablename = http.getParam('tablename');
+								
+				// 注册
+				form.on('submit(register)', function(data) {
+					data = data.field;
+                    					                                                                                                                                            					                                                                                                                                            					                                                                                                                                            					                                                                                                                                            					                                                                                                                                            					                                                                                                                                            					                                                                                                                                            					                                                                                                                                            					                                        if(!isIntNumer(data.thumbsupnum)){
+                        layer.msg('赞应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                                                            					                                        if(!isIntNumer(data.crazilynum)){
+                        layer.msg('踩应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                                                            					                                                                                                                                            					                                        if(!isIntNumer(data.clicknum)){
+                        layer.msg('点击次数应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                                                            					                                                                                                                                            					                    if(!data.price){
+                        layer.msg('价格不能为空', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                if(!isNumber(data.price)){
+                        layer.msg('价格应输入数字', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                                        					                                        if(!isIntNumer(data.onelimittimes)){
+                        layer.msg('单限应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                                                            					                                        if(!isIntNumer(data.alllimittimes)){
+                        layer.msg('库存应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                                                            					                                                            if(!isNumber(data.longitude)){
+                        layer.msg('经度应输入数字', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                                        					                                                            if(!isNumber(data.latitude)){
+                        layer.msg('纬度应输入数字', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                                        					                                                                                                                                                                http.requestJson(tablename + '/register', 'post', data, function(res) {
+						layer.msg('注册成功', {
+							time: 2000,
+							icon: 6
+						},function(){
+							// 路径访问设置
+							window.location.href = '../login/login.html';
+						});
+					});
+					return false
+				});
+
+			});
+		</script>
+	</body>
+</html>

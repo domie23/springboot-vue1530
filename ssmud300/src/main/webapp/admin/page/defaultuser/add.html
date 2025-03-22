@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>注册用户</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+		<style>
+			body {
+            	background-color: #ffffff;
+        	}
+    </style>
+	</head>
+	<body>
+		<form class="layui-form layui-form-pane" lay-filter="myForm" id="app">
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">用户名：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.username" type="text" name="username" id="username" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">密码：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.mima" type="text" name="mima" id="mima" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">姓名：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.name" type="text" name="name" id="name" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">性别</label>
+					<div class="layui-input-block">
+						<select name="sex" id="sex" lay-filter="sex">
+							<option value="">请选择</option>
+							<option v-for="(item,index) in sex" v-bind:key="index" :value="item">{{item}}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">年龄：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.age" type="text" name="age" id="age" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">电话：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.phone" type="text" name="phone" id="phone" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">照片：</label>
+					<div v-if="detail.picture" class="layui-input-block">
+						<img id="pictureImg" style="width: 91px;height: 91px;" :src="detail.picture">
+						<input type="hidden" :value="detail.picture" id="picture" name="picture" />
+					</div>
+					<div class="layui-input-block">
+						<button type="button" class="layui-btn btn-theme" id="pictureUpload">
+							<i class="layui-icon">&#xe67c;</i>上传照片
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">邮箱：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.email" type="text" name="email" id="email" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">积分：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.jifen" type="text" name="jifen" id="jifen" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">余额：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.money" type="text" name="money" id="money" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+
+
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="text-align: right;margin-right: 30px;">
+					<button class="layui-btn btn-submit" lay-submit lay-filter="*">提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</form>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/utils.js" charset="utf-8"></script>
+		<script src="../../js/validate.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+
+
+		<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+					sex: [],
+					detail: {
+						username: '',
+						mima: '',
+						name: '',
+						sex: '',
+						age: '',
+						phone: '',
+						picture: '',
+						email: '',
+						jifen: 0,
+						money: 0,
+					}
+				},
+				updated: function() {
+					layui.form.render('select', 'myForm');
+				},
+				computed: {},
+				methods: {
+					jump(url) {
+						jump(url)
+					}
+				}
+			})
+
+			layui.use(['layer', 'element', 'carousel', 'jquery', 'form', 'upload', 'http', 'laydate', 'tinymce'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var carousel = layui.carousel;
+				var http = layui.http;
+				var jquery = layui.jquery;
+				var form = layui.form;
+				var upload = layui.upload;
+				var laydate = layui.laydate;
+				var tinymce = layui.tinymce
+
+
+				vue.sex = '男,女'.split(',')
+				// 上传图片
+				var pictureUpload = upload.render({
+					//绑定元素
+					elem: '#pictureUpload',
+					//上传接口
+					url: http.baseurl + 'file/upload',
+					// 请求头
+					headers: {
+						Token: localStorage.getItem('Token')
+					},
+					// 允许上传时校验的文件类型
+					accept: 'images',
+					before: function() {
+						//loading层
+						var index = layer.load(1, {
+							shade: [0.1, '#fff'] //0.1透明度的白色背景
+						});
+					},
+					// 上传成功
+					done: function(res) {
+						console.log(res);
+						layer.closeAll();
+						if (res.code == 0) {
+							layer.msg("上传成功", {
+								time: 2000,
+								icon: 6
+							})
+							var url = http.baseurl + 'upload/' + res.file;
+							jquery('#picture').val(url);
+							jquery('#pictureImg').attr('src', url)
+							vue.detail.picture = url;
+						} else {
+							layer.msg(res.msg, {
+								time: 2000,
+								icon: 5
+							})
+						}
+					},
+					//请求异常回调
+					error: function() {
+						layer.closeAll();
+						layer.msg("请求接口异常", {
+							time: 2000,
+							icon: 5
+						})
+					}
+				});
+
+
+				// 跨表计算
+				if (http.getParam('corss')) {
+					var obj = JSON.parse(localStorage.getItem('crossObj'));
+					//form.val("myForm", obj);
+					for (var key in obj) {
+						vue.detail[`${key}`] = obj[`${key}`]
+					}
+				}
+
+
+				// 提交
+				form.on('submit(*)', function(data) {
+					data = data.field;
+
+					// 数据校验
+					if (!data.username) {
+						layer.msg('用户名不能为空', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!data.mima) {
+						layer.msg('密码不能为空', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!isIntNumer(data.age)) {
+						layer.msg('年龄应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!isMobile(data.phone)) {
+						layer.msg('电话应输入手机格式', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!isEmail(data.email)) {
+						layer.msg('邮箱应输入邮箱格式', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!isIntNumer(data.jifen)) {
+						layer.msg('积分应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!isNumber(data.money)) {
+						layer.msg('余额应输入数字', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+
+					// 跨表计算
+
+					// 比较大小
+
+					// 提交数据
+					http.requestJson('defaultuser' + '/save', 'post', data, function(res) {
+						layer.msg('提交成功', {
+							time: 2000,
+							icon: 6
+						}, function() {
+							window.parent.location.reload();
+						});
+					});
+
+					return false
+				});
+
+			});
+		</script>
+	</body>
+</html>

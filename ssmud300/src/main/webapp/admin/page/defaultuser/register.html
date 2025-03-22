@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>后台管理-注册</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+		<style>
+			body {
+				background-image:url("../../images/bg.jpg");
+				height:100%;
+				width:100%;
+			}
+			#container{
+				height:100%;
+				width:100%;}
+			input:-webkit-autofill {
+				-webkit-box-shadow:inset 0 0 0 1000px #fff;
+				background-color:transparent;
+			}
+			.admin-login-background {
+				width:500px;
+				height:100%;
+				position:absolute;
+				right:0;
+				top:0;
+				background: #FFFFFF;
+				padding: 0 50px;
+			}
+			.admin-header {
+				text-align:center;
+				margin-bottom:130px;
+				margin-top: 30px;
+				font-weight:bold;
+				font-size:25px;
+				color:#515151;
+			}
+			.admin-input {
+				border-top-style:solid;
+				border-right-style:solid;
+				border-bottom-style:solid;
+				border-left-style:solid;
+				height:50px;
+				width:100%;
+				padding-bottom:0px;
+			}
+			.admin-input::-webkit-input-placeholder {
+				color:#40E4E5  
+			}
+			.layui-icon-username {
+				color:#40E4E5 !important;
+			}
+			.layui-icon-username:hover {
+				color:#40E4E5 !important;
+			}
+			.layui-icon-password {
+				color:#40E4E5!important;
+			}
+			.layui-icon-password:hover {
+				color:#40E4E5 !important;
+			}
+			.admin-input-username {
+				border-top-style:solid;
+				border-radius:10px 10px 0 0;
+			}
+			.admin-input-verify {
+				border-radius:0 0 10px 10px;
+			}
+			.admin-button {
+				margin-top:20px;
+				font-weight:bold;
+				font-size:18px;
+				width:100%;
+				height:50px;
+				border-radius:5px;
+				background-color:#40E4E5;
+				border:1px solid #40E4E5;
+			}
+			.admin-icon {
+				margin-top:10px;
+				margin-left: 10px;
+				font-size:30px;
+			}
+			i {
+				position:absolute;
+			}
+			.layui-form-radio * {
+				font-size: 14px;
+				padding-left: 30px;
+			}
+			.layui-form-radio>i {
+				margin-left:-30px;
+			}
+			.layui-form-item{
+				margin-top: 20px;
+			}
+    </style>
+	</head>
+	<body>
+		<div id="container layui-anim layui-anim-upbit">
+			<div></div>
+			<div class="admin-login-background" id="app">
+				<div class="admin-header">
+					<span>{{projectName}}注册</span>
+				</div>
+				<form class="layui-form" action="">
+					<div style="">
+						<label style="font-size: 14px;line-height: 40px;">用户名：</label>
+						<input type="text" id="username" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input admin-input ">
+					</div>
+					<div style="">
+						<label style="font-size: 14px;line-height: 40px;">密码：</label>
+						<input type="password" id="mima" name="mima" placeholder="请输入密码" autocomplete="off" class="layui-input admin-input ">
+					</div>
+					<div style="">
+						<label style="font-size: 14px;line-height: 40px;">姓名：</label>
+						<input type="text" id="name" name="name" placeholder="请输入姓名" autocomplete="off" class="layui-input admin-input ">
+					</div>
+					<div style="">
+						<label style="font-size: 14px;line-height: 40px;">年龄：</label>
+						<input type="text" id="age" name="age" placeholder="请输入年龄" autocomplete="off" class="layui-input admin-input ">
+					</div>
+					<div style="">
+						<label style="font-size: 14px;line-height: 40px;">电话：</label>
+						<input type="text" id="phone" name="phone" placeholder="请输入电话" autocomplete="off" class="layui-input admin-input ">
+					</div>
+					<div style="">
+						<label style="font-size: 14px;line-height: 40px;">邮箱：</label>
+						<input type="text" id="email" name="email" placeholder="请输入邮箱" autocomplete="off" class="layui-input admin-input ">
+					</div>
+
+					<div>
+						<button class="layui-btn admin-button" lay-submit="" lay-filter="register">注 册</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<script src="../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+		<script src="../../js/validate.js" charset="utf-8"></script>
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js" charset="utf-8"></script>
+		<script src="../../js/menu.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+					rulesForm: {
+						username: "",
+						password: "",
+						role: ""
+					},
+					tableName: "",
+					menus: []
+				},
+				mounted: function() {
+					// 获取菜单信息
+					let menus = getAllMenu();
+					this.menus = menus;
+				},
+				created: function() {},
+				updated: function() {},
+				watch: {},
+				methods: {
+					// 注册页面
+					register(tableName) {
+						window.location.href = '../' + tableName + '/register.html?tablename=' + tableName;
+					}
+				}
+			});
+			
+			layui.use(['layer', 'element', 'form', 'http', 'jquery'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var form = layui.form;
+				var http = layui.http;
+				var jquery = layui.jquery;
+
+				var tablename = http.getParam('tablename');
+
+				// 注册
+				form.on('submit(register)', function(data) {
+					data = data.field;
+					if (!data.username) {
+						layer.msg('用户名不能为空', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!data.mima) {
+						layer.msg('密码不能为空', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!isIntNumer(data.age)) {
+						layer.msg('年龄应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!isMobile(data.phone)) {
+						layer.msg('电话应输入手机格式', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!isEmail(data.email)) {
+						layer.msg('邮箱应输入邮箱格式', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					http.requestJson(tablename + '/register', 'post', data, function(res) {
+						layer.msg('注册成功', {
+							time: 2000,
+							icon: 6
+						}, function() {
+							// 路径访问设置
+							window.location.href = '../login/login.html';
+						});
+					});
+					return false
+				});
+
+			});
+		</script>
+	</body>
+</html>

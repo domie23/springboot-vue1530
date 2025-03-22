@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>订单</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+		<style>
+			body {
+            	background-color: #ffffff;
+        	}
+    </style>
+	</head>
+	<body>
+		<form class="layui-form layui-form-pane" lay-filter="myForm" id="app">
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">订单id：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.orderid" type="text" name="orderid" id="orderid" autocomplete="off"
+						 class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">商品名称：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.goodname" type="text" name="goodname" id="goodname" autocomplete="off"
+						 class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">商品图片：</label>
+					<div v-if="detail.picture" class="layui-input-block">
+						<img id="pictureImg" style="width: 91px;height: 91px;" :src="detail.picture">
+						<input type="hidden" :value="detail.picture" id="picture" name="picture" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">购买数量：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.buynumber" type="text" name="buynumber" id="buynumber" autocomplete="off"
+						 class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">价格/积分：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.price" type="text" name="price" id="price" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<!-- <div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">折扣价格：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.discountprice" type="text" name="discountprice" id="discountprice"
+						 autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div> -->
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">总价格/总积分：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.total" type="text" name="total" id="total" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<!-- <div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">折扣总价格：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.discounttotal" type="text" name="discounttotal" id="discounttotal"
+						 autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div> -->
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">支付类型：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" :value="detail.type==1?'现金':'积分'" type="text" name="discounttotal" id="discounttotal"
+						 autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">状态：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.status" type="text" name="status" id="status" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">地址：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.address" type="text" name="address" id="address" autocomplete="off"
+						 class="layui-input">
+					</div>
+				</div>
+			</div>
+
+		</form>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/utils.js" charset="utf-8"></script>
+		<script src="../../js/validate.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+					detail: {
+						orderid: '',
+						tablename: '',
+						userid: '',
+						goodid: '',
+						goodname: '',
+						picture: '',
+						buynumber: '',
+						price: '',
+						discountprice: '',
+						total: '',
+						discounttotal: '',
+						type: '',
+						status: '',
+						address: '',
+					}
+				},
+				updated: function() {
+					layui.form.render('select', 'myForm');
+				},
+				computed: {},
+				methods: {
+					jump(url) {
+						jump(url)
+					}
+				}
+			})
+
+			layui.use(['layer', 'element', 'jquery', 'form', 'http'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var http = layui.http;
+				var jquery = layui.jquery;
+				var form = layui.form;
+
+				var id = http.getParam('id');
+				http.request('orders/info/' + id, 'get', {}, (res) => {
+					form.val(res.data)
+					vue.detail = res.data;
+				})
+
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>留言板</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+		<style>
+			body {
+            	background-color: #ffffff;
+        	}
+    </style>
+	</head>
+	<body>
+		<form class="layui-form layui-form-pane" lay-filter="myForm" id="app">
+			<input type="hidden" :value="detail.id" id="id" name="id" />
+			<input type="hidden" :value="detail.userid" id="userid" name="userid" />
+			<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">留言人用户名：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.username" type="text" name="username" id="username" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">留言内容：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.content" type="text" name="content" id="content" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">回复内容：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.reply" type="text" name="reply" id="reply" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+
+
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="text-align: right;margin-right: 30px;">
+					<button class="layui-btn btn-submit" lay-submit lay-filter="*">提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</form>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/utils.js" charset="utf-8"></script>
+		<script src="../../js/validate.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+					detail: {
+						userid: '',
+						username: '',
+						content: '',
+						reply: '',
+					}
+				},
+				updated: function() {
+					layui.form.render('select', 'myForm');
+				},
+				computed: {},
+				methods: {
+					jump(url) {
+						jump(url)
+					}
+				}
+			})
+
+			layui.use(['layer', 'element', 'carousel', 'jquery', 'form', 'upload', 'laydate', 'tinymce', 'http'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var carousel = layui.carousel;
+				var http = layui.http;
+				var jquery = layui.jquery;
+				var form = layui.form;
+				var upload = layui.upload;
+				var laydate = layui.laydate;
+				var tinymce = layui.tinymce
+
+
+
+
+				// 跨表计算
+				if (http.getParam('corss')) {
+					var obj = JSON.parse(localStorage.getItem('crossObj'));
+					//form.val("myForm", obj);
+					for (var key in obj) {
+						vue.detail[`${key}`] = obj[`${key}`]
+					}
+				}
+
+
+				// 提交
+				form.on('submit(*)', function(data) {
+					data = data.field;
+
+					// 数据校验
+					if (!data.userid) {
+						layer.msg('留言人id不能为空', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!data.content) {
+						layer.msg('留言内容不能为空', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+
+					// 跨表计算
+
+					// 比较大小
+
+					// 提交数据
+					http.requestJson('messages' + '/update', 'post', data, function(res) {
+						layer.msg('提交成功', {
+							time: 2000,
+							icon: 6
+						}, function() {
+							window.parent.location.reload();
+						});
+					});
+
+					return false
+				});
+
+				var id = http.getParam('id');
+				http.request('messages/info/' + id, 'get', {}, (res) => {
+					form.val(res.data)
+					vue.detail = res.data;
+				})
+
+
+
+			});
+		</script>
+	</body>
+</html>

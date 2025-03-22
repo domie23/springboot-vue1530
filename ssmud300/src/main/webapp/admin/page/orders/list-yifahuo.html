@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>订单</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+	</head>
+	<body>
+		<div class="layuimini-container">
+			<div class="layuimini-main">
+				<div style="margin: 10px 10px 10px 10px">
+					<form class="layui-form layui-form-pane" action="">
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">订单编号：</label>
+								<div class="layui-input-inline">
+									<input type="text" id="orderid" name="orderid" autocomplete="off" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label">商品名称：</label>
+								<div class="layui-input-inline">
+									<input type="text" id="goodname" name="goodname" autocomplete="off" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-inline">
+								<button id="btn-search" type="submit" class="layui-btn layui-btn-primary" lay-submit lay-filter="data-search-btn"><i
+									 class="layui-icon"></i>
+									搜 索</button>
+							</div>
+						</div>
+					</form>
+				</div>
+
+				<table class="layui-hide" id="mytable" lay-filter="currentTableFilter"></table>
+
+				<script type="text/html" id="pictureBar">
+					{{# if (d.picture){ }}
+					<div>
+					<img src="{{d.picture.split(',')[0]}}" width="50" height="50">
+					</div>
+					{{# }else{ }}
+					<div v-else>无图片</div>
+					{{# } }}
+				</script>
+
+				<script type="text/html" id="typeBar">
+					{{# if (d.type==1){ }}
+					<div>
+					现金
+					</div>
+					{{# }else{ }}
+					积分
+					{{# } }}
+				</script>
+
+				<script type="text/html" id="currentTableBar">
+					{{# if (isAuth('yifahuodingdan','查看')){}}
+					<a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="info">查看</a>
+					{{#}}}
+					{{# if (isAuth('yifahuodingdan','修改')){}}
+					<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="edit">确认完成</a>
+					{{#}}}
+				</script>
+
+			</div>
+		</div>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/menu.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			layui.use(['form', 'table', 'laydate', 'http'], function() {
+				var $ = layui.jquery;
+				var form = layui.form;
+				var table = layui.table;
+				var http = layui.http;
+				var laydate = layui.laydate;
+				table.render({
+					elem: '#mytable',
+					url: http.baseurl + 'orders/page?sort=addtime&status=已发货',
+					toolbar: '#mytoolbar',
+					defaultToolbar: ['filter', 'exports', 'print'],
+					headers: {
+						'Token': localStorage.getItem("Token")
+					},
+					request: {
+						pageName: 'page', //页码的参数名称，默认：page
+						limitName: 'limit' //每页数据量的参数名，默认：limit
+					},
+					parseData: function(res) { //res 即为原始返回的数据
+						if (res.code == 401) {
+							window.parent.location.href = '../login/login.html'
+						}
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.data.total, //解析数据长度
+							"data": res.data.list //解析数据列表
+						};
+					},
+					cols: [
+						[{
+								type: "checkbox",
+								width: 50,
+								fixed: "left"
+							},
+							{
+								field: 'orderid',
+								title: '订单id',
+								minWidth: '150',
+								align: "center"
+							},
+							{
+								field: 'goodname',
+								title: '商品名称',
+								minWidth: '150',
+								align: "center"
+							},
+							{
+								title: '商品图片',
+								templet: '#pictureBar',
+								minWidth: '100',
+								align: "center"
+							},
+							{
+								field: 'buynumber',
+								title: '购买数量',
+								minWidth: '150',
+								align: "center"
+							},
+							{
+								field: 'price',
+								title: '价格/积分',
+								minWidth: '150',
+								align: "center"
+							},
+							{
+								field: 'total',
+								title: '总价格/总积分',
+								minWidth: '150',
+								align: "center"
+							},
+							{
+								field: 'type',
+								title: '支付类型',
+								minWidth: '150',
+								align: "center",
+								templet: '#typeBar',
+							},
+							{
+								field: 'status',
+								title: '状态',
+								minWidth: '150',
+								align: "center"
+							},
+							{
+								field: 'address',
+								title: '地址',
+								minWidth: '150',
+								align: "center"
+							},
+							{
+								title: '操作',
+								width: 200,
+								templet: '#currentTableBar',
+								align: "center"
+							}
+						]
+					],
+					limits: [10, 15, 20, 25, 50, 100],
+					limit: 15,
+					page: true
+				});
+
+				// 监听搜索操作
+				form.on('submit(data-search-btn)', function(data) {
+
+					var param = {};
+					if (data.field.orderid) {
+						param['orderid'] = '%' + data.field.orderid + '%'
+					}
+					if (data.field.goodname) {
+						param['goodname'] = '%' + data.field.goodname + '%'
+					}
+
+					//执行搜索重载
+					table.reload('mytable', {
+						page: {
+							curr: 1
+						},
+						where: param,
+						done: function(res, curr, count) {
+							this.where = {};
+						}
+					}, 'data');
+					return false;
+				});
+				// 表格按钮监听
+				table.on('tool(currentTableFilter)', function(obj) {
+					console.log(obj)
+					var data = obj.data;
+					if (obj.event === 'info') {
+						var index = layer.open({
+							title: '查看',
+							type: 2,
+							shade: 0.2,
+							maxmin: true,
+							shadeClose: true,
+							area: ['100%', '100%'],
+							content: './info.html?id=' + obj.data.id,
+						});
+						$(window).on("resize", function() {
+							layer.full(index);
+						});
+					} else if (obj.event === 'edit') {
+						layer.confirm('是否确认完成订单？', function(index) {
+							obj.data.status = '已完成'
+							http.requestJson('orders/update', 'post', obj.data, function(res) {
+								window.location.reload();
+							})
+						});
+						return false;
+					} else if (obj.event === 'delete') {
+
+					}
+				});
+			});
+		</script>
+		<script>
+
+		</script>
+
+	</body>
+</html>

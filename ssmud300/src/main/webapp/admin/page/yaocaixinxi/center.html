@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>药材信息</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+				<style>
+			body {
+            	background-color: #ffffff;
+        	}
+    </style>
+	</head>
+	<body>
+		<form class="layui-form layui-form-pane" lay-filter="myForm" id="app">		
+			<input type="hidden" :value="detail.id" id="id" name="id" />
+									<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">药材编号：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.yaocaibianhao" type="text" name="yaocaibianhao" id="yaocaibianhao" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">药材名称：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.yaocaimingcheng" type="text" name="yaocaimingcheng" id="yaocaimingcheng" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">药材类型</label>
+					<div class="layui-input-block">
+						<select v-model="detail.yaocaileixing" name="yaocaileixing" id="yaocaileixing" lay-filter="yaocaileixing">
+							<option value="">请选择</option>
+							<option v-for="(item,index) in yaocaileixing" v-bind:key="index" :value="item">{{item}}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">药材库存：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.yaocaikucun" type="text" name="yaocaikucun" id="yaocaikucun" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">药材图片：</label>
+					<div v-if="detail.yaocaitupian" class="layui-input-block">
+						<img id="yaocaitupianImg" style="width: 91px;height: 91px;" :src="detail.yaocaitupian">
+						<input type="hidden" :value="detail.yaocaitupian" id="yaocaitupian" name="yaocaitupian" />
+					</div>
+					<div class="layui-input-block">
+						<button type="button" class="layui-btn btn-theme" id="yaocaitupianUpload">
+							<i class="layui-icon">&#xe67c;</i>上传药材图片
+						</button>
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">药材介绍：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.yaocaijieshao" type="text" name="yaocaijieshao" id="yaocaijieshao" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+																																							<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">积分：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.jifen" disabled="disabled" type="text" name="jifen" id="jifen" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">价格：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.price" type="text" name="price" id="price" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+									
+																																													<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">药材详情：</label>
+					<div class="layui-input-block">
+						<textarea v-model="detail.yaocaixiangqing" name="yaocaixiangqing" id="yaocaixiangqing">请输入药材详情</textarea>
+					</div>
+				</div>
+			</div>
+																														
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="text-align: right;margin-right: 30px;">
+					<button class="layui-btn btn-submit" lay-submit lay-filter="*">提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</form>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/utils.js" charset="utf-8"></script>
+		<script src="../../js/validate.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+				<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+                    																														yaocaileixing: [],
+																																																																																															detail: {
+                                                                        yaocaibianhao: genTradeNo(),
+                                                                                                yaocaimingcheng: '',
+                                                                                                yaocaileixing: '',
+                                                                                                yaocaikucun: '',
+                                                                                                yaocaitupian: '',
+                                                                                                yaocaijieshao: '',
+                                                                                                yaocaixiangqing: '',
+                                                                                                thumbsupnum: '',
+                                                                                                crazilynum: '',
+                                                                                                jifen: '',
+                                                                                                price: '',
+                                                                    }
+				},
+				updated: function() {
+					layui.form.render('select', 'myForm');
+				},
+                computed: {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        },
+				methods: {
+					jump(url) {
+						jump(url)
+					}
+				}
+			})
+
+			layui.use(['layer', 'element', 'carousel', 'jquery', 'form', 'upload', 'laydate','tinymce','http'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var carousel = layui.carousel;
+				var http = layui.http;
+				var jquery = layui.jquery;
+				var form = layui.form;
+				var upload = layui.upload;
+				var laydate = layui.laydate;
+                var tinymce = layui.tinymce
+
+				
+                																								http.request(`option/yaocaifenlei/yaocaileixing`,'get',{},(res)=>{
+					vue.yaocaileixing = res.data
+				});
+																								// 上传图片
+				var yaocaitupianUpload = upload.render({
+					//绑定元素
+					elem: '#yaocaitupianUpload',
+					//上传接口
+					url: http.baseurl + 'file/upload',
+					// 请求头
+					headers: {
+						Token: localStorage.getItem('Token')
+					},
+					// 允许上传时校验的文件类型
+					accept: 'images',
+					before: function() {
+						//loading层
+						var index = layer.load(1, {
+							shade: [0.1, '#fff'] //0.1透明度的白色背景
+						});
+					},
+					// 上传成功
+					done: function(res) {
+						console.log(res);
+						layer.closeAll();
+						if (res.code == 0) {
+							layer.msg("上传成功", {
+								time: 2000,
+								icon: 6
+							})
+							var url = http.baseurl + 'upload/' + res.file;
+							jquery('#yaocaitupian').val(url);
+							jquery('#yaocaitupianImg').attr('src', url)
+                            vue.detail.yaocaitupian = url;
+						} else {
+							layer.msg(res.msg, {
+								time: 2000,
+								icon: 5
+							})
+						}
+					},
+					//请求异常回调
+					error: function() {
+						layer.closeAll();
+						layer.msg("请求接口异常", {
+							time: 2000,
+							icon: 5
+						})
+					}
+				});
+																				                var edit = tinymce.render({
+                    elem: "#yaocaixiangqing",
+                    height: 600,
+                    images_upload_handler: function(blobInfo, succFun, failFun) {
+                        var xhr, formData;
+                        var file = blobInfo.blob(); //转化为易于理解的file对象
+                        xhr = new XMLHttpRequest();
+                        xhr.withCredentials = false;
+                        xhr.open('POST', http.baseurl + 'file/upload');
+                        xhr.setRequestHeader("Token", localStorage.getItem('Token')); //设置请求头
+                        xhr.onload = function() {
+                            var json;
+                            if (xhr.status != 200) {
+                                failFun('HTTP Error: ' + xhr.status);
+                                return;
+                            }
+                            json = JSON.parse(xhr.responseText);
+                            if (!json || typeof json.file != 'string') {
+                                failFun('Invalid JSON: ' + xhr.responseText);
+                                return;
+                            }
+                            succFun(http.baseurl + '/upload/' + json.file);
+                        };
+                        formData = new FormData();
+                        formData.append('file', file, file.name); //此处与源文档不一样
+                        xhr.send(formData);
+                    }
+                }, (opt) => {
+
+                });
+																																												
+                                // session独取
+				let table = localStorage.getItem("userTable");
+				http.request(`${table}/session`, 'get', {}, function(data) {
+					// 表单赋值
+					//form.val("myForm", data.data);
+					data = data.data
+					for(var key in data){
+						vue.detail[`${key}`] = data[`${key}`]
+					}
+				});
+                
+                // 跨表计算
+                if(http.getParam('corss')){
+					var obj = JSON.parse(localStorage.getItem('crossObj'));
+					//form.val("myForm", obj);
+					for(var key in obj){
+						vue.detail[`${key}`] = obj[`${key}`]
+					}
+				}
+				
+                																																																																																								
+				// 提交
+				form.on('submit(*)', function(data) {
+					data = data.field;
+					
+                    // 数据校验
+					                    										                                                                                                                        					                                        										                                                                                                                        					                                        										                                                                                                                        					                                        										                                        if(!isIntNumer(data.yaocaikucun)){
+                        layer.msg('药材库存应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                                        					                                        										                                                                                                                        					                                        										                                                                                                                        					                                        					var yaocaixiangqing = tinymce.get('#yaocaixiangqing').getContent()
+					data.yaocaixiangqing = yaocaixiangqing;
+															                                                                                                                        					                                        										                                                                                                                        					                                        										                                                                                                                        					                                        										                                        if(!isIntNumer(data.jifen)){
+                        layer.msg('积分应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                                        					                                        										                    if(!data.price){
+                        layer.msg('价格不能为空', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                if(!isNumber(data.price)){
+                        layer.msg('价格应输入数字', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                    					                    
+					// 跨表计算
+					                                                                                                                                                                                                                                                                                                                                                                                                                                                        					
+                    // 比较大小
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        					
+					// 提交数据
+					http.requestJson('yaocaixinxi' + '/update', 'post', data, function(res) {
+					 	layer.msg('提交成功', {
+					 		time: 2000,
+					 		icon: 6
+					 	}, function() {
+					 		window.parent.location.reload();
+						});
+					 });
+
+					return false
+				});
+
+				http.request(localStorage.getItem('sessionTable') + '/session', 'get', {}, (res) => {
+					form.val(res.data)
+					vue.detail = res.data;
+				})
+
+			});
+		</script>
+	</body>
+</html>

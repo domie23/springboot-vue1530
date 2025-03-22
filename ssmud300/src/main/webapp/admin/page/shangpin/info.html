@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>商品</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+		<style>
+			body {
+            	background-color: #ffffff;
+        	}
+    </style>
+	</head>
+	<body>
+		<form class="layui-form layui-form-pane" lay-filter="myForm" id="app">		
+									<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">名称：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.mingcheng" type="text" name="mingcheng" id="mingcheng" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">类型</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.leixing" type="text" name="leixing" id="leixing" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">图片：</label>
+					<div v-if="detail.tupian" class="layui-input-block">
+						<img id="tupianImg" style="width: 91px;height: 91px;" :src="detail.tupian">
+						<input type="hidden" :value="detail.tupian" id="tupian" name="tupian" />
+					</div>
+				</div>
+			</div>
+																					<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">产地：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.chandi" type="text" name="chandi" id="chandi" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+																																																																		<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">点击次数：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.clicknum" type="text" name="clicknum" id="clicknum" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">积分：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.jifen" type="text" name="jifen" id="jifen" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">价格：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.price" type="text" name="price" id="price" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">单限：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.onelimittimes" type="text" name="onelimittimes" id="onelimittimes" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">库存：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.alllimittimes" type="text" name="alllimittimes" id="alllimittimes" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+																														<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">地址：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" type="text" v-model="detail.fulladdress" name="fulladdress" id="fulladdress" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+									
+																											<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">详情：</label>
+					<div class="layui-input-block">
+						<div v-html="detail.xiangqing"></div>
+					</div>
+				</div>
+			</div>
+																																																																																																		</form>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/utils.js" charset="utf-8"></script>
+		<script src="../../js/validate.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+					detail: {
+                                                mingcheng: '',
+                                                leixing: '',
+                                                tupian: '',
+                                                xiangqing: '',
+                                                chandi: '',
+                                                sfsh: '',
+                                                shhf: '',
+                                                ispay: '',
+                                                thumbsupnum: '',
+                                                crazilynum: '',
+                                                reversetime: '',
+                                                clicknum: '',
+                                                jifen: '',
+                                                price: '',
+                                                onelimittimes: '',
+                                                alllimittimes: '',
+                                                longitude: '',
+                                                latitude: '',
+                                                fulladdress: '',
+                                            }
+				},
+				updated: function() {
+					layui.form.render('select', 'myForm');
+				},
+                computed: {},
+				methods: {
+					jump(url) {
+						jump(url)
+					}
+				}
+			})
+
+			layui.use(['layer', 'element',  'jquery', 'form', 'http'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var http = layui.http;
+				var jquery = layui.jquery;
+				var form = layui.form;
+
+                var id = http.getParam('id');
+				http.request('shangpin/info/' + id, 'get', {}, (res) => {
+					form.val(res.data)
+					vue.detail = res.data;
+				})
+
+			});
+		</script>
+	</body>
+</html>

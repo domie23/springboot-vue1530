@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>出库记录</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+	</head>
+	<body>
+		<div class="layuimini-container">
+			<div class="layuimini-main">
+				<div style="margin: 10px 10px 10px 10px">
+					<form class="layui-form layui-form-pane" action="">
+						<div class="layui-form-item">	
+																																										<div class="layui-inline">
+								<label class="layui-form-label">药材名称</label>
+								<div class="layui-input-inline">
+									<input type="text" id="yaocaimingcheng" name="yaocaimingcheng" autocomplete="off" class="layui-input">
+								</div>
+							</div>
+																																										<div class="layui-inline">
+								<label class="layui-form-label">药材类型</label>
+								<div class="layui-input-inline">
+									<input type="text" id="yaocaileixing" name="yaocaileixing" autocomplete="off" class="layui-input">
+								</div>
+							</div>
+																																																								<div class="layui-inline">
+								<button id="btn-search" type="submit" class="layui-btn layui-btn-primary" lay-submit lay-filter="data-search-btn"><i
+									 class="layui-icon"></i>
+									搜 索</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				<script type="text/html" id="mytoolbar">
+					<div class="layui-btn-container">
+						{{# if (isAuth('chukujilu','新增')){}}
+						<button class="layui-btn layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
+						{{#}}}
+						{{# if (isAuth('chukujilu','删除')){}}
+						<button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
+						{{#}}}
+											</div>
+				</script>
+				<table class="layui-hide" id="mytable" lay-filter="currentTableFilter"></table>
+
+																																												
+				<script type="text/html" id="shenheBar">
+					{{# if (isAuth('chukujilu','审核')){ }}
+						{{# if(d.sfsh=='是'){ }}
+							通过
+						{{# }else if(d.sfsh=='否') { }}
+							未通过
+						{{# } }} 
+						<a class="layui-btn layui-btn-xs layui-btn-success" lay-event="sh">审核</a>
+					{{#}}}
+				</script>
+				
+				<script type="text/html" id="ispayBar">
+					{{# if(d.ispay=='未支付'){ }}
+						<a class="layui-btn layui-btn-xs layui-btn-success" lay-event="pay">点击支付</a>
+					{{# }else { }}
+						已支付
+					{{# } }} 
+				</script>
+
+				<script type="text/html" id="currentTableBar">
+					{{# if (isAuth('chukujilu','查看')){}}
+					<a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="info">查看</a>
+					{{#}}}
+					{{# if (isAuth('chukujilu','修改')){}}
+					<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="edit">编辑</a>
+					{{#}}}
+					{{# if (isAuth('chukujilu','删除')){}}
+					<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+					{{#}}}
+									</script>
+
+			</div>
+		</div>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/menu.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			layui.use(['form', 'table', 'laydate', 'http'], function() {
+				var $ = layui.jquery;
+				var form = layui.form;
+				var	table = layui.table;
+				var	http = layui.http;
+				var	laydate = layui.laydate;
+																																																																																																												table.render({
+					elem: '#mytable',
+					url:  http.baseurl + 'chukujilu/page',
+					toolbar: '#mytoolbar',
+					defaultToolbar: ['filter', 'exports', 'print'],
+					headers: {
+						'Token': localStorage.getItem("Token")
+					},
+					request: {
+						pageName: 'page', //页码的参数名称，默认：page
+						limitName: 'limit' //每页数据量的参数名，默认：limit
+					},
+					parseData: function(res) { //res 即为原始返回的数据
+						if (res.code == 401) {
+							window.parent.location.href = '../login/login.html'
+						}
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.data.total, //解析数据长度
+							"data": res.data.list //解析数据列表
+						};
+					},
+					cols: [
+						[{
+								type: "checkbox",
+								align: "center",
+								width: 50,
+							},
+							{
+								field: 'id',
+								title: 'ID',
+								sort: true
+							},
+																					{
+								field: 'yaocaibianhao',
+								title: '药材编号',
+								minWidth: '150',
+								align: "center"
+							},
+																												{
+								field: 'yaocaimingcheng',
+								title: '药材名称',
+								minWidth: '150',
+								align: "center"
+							},
+																												{
+								field: 'yaocaileixing',
+								title: '药材类型',
+								minWidth: '150',
+								align: "center"
+							},
+																												{
+								field: 'yaocaikucun',
+								title: '药材库存',
+								minWidth: '150',
+								align: "center"
+							},
+																												{
+								field: 'chukushijian',
+								title: '出库时间',
+								minWidth: '150',
+								align: "center"
+							},
+																												{
+								title: '操作',
+								width: 300,
+								templet: '#currentTableBar',
+								align: "center"
+							}
+						]
+					],
+					limits: [10, 15, 20, 25, 50, 100],
+					limit: 15,
+					page: true
+				});
+
+				// 监听搜索操作
+				form.on('submit(data-search-btn)', function(data) {				
+
+					var param = {}
+
+																														if(data.field.yaocaimingcheng){
+						param['yaocaimingcheng'] =  '%' + data.field.yaocaimingcheng + '%'
+					}
+																														if(data.field.yaocaileixing){
+						param['yaocaileixing'] =  '%' + data.field.yaocaileixing + '%'
+					}
+																																								//执行搜索重载
+					table.reload('mytable', {
+						page: {
+							curr: 1
+						},
+						where: param,
+						done: function(res, curr, count) {
+							this.where={};
+						}
+					}, 'data');
+					return false;
+				});
+				// toolbar监听事件
+				table.on('toolbar(currentTableFilter)', function(obj) {
+					if (obj.event === 'add') { // 监听添加操作
+						var index = layer.open({
+							title: '添加',
+							type: 2,
+							shade: 0.2,
+							maxmin: true,
+							shadeClose: true,
+							area: ['100%', '100%'],
+							content: './add.html',
+						});
+						$(window).on("resize", function() {
+							layer.full(index);
+						});
+					} else if (obj.event === 'delete') { // 监听删除操作
+						var checkStatus = table.checkStatus('mytable'),
+							data = checkStatus.data;
+						if (data.length == 0) {
+							layer.msg('请选择要删除的数据');
+							return
+						}
+						var ids = [];
+						for (var i = 0; i < data.length; i++) {
+							ids.push(data[i].id);
+						}
+						layer.confirm('是否删除选中数据？', function(index) {
+						http.requestJson('chukujilu/delete', 'post' , ids, function(res) {
+								layer.close(index);
+								// 触发click，重新请求查询接口
+								$('#btn-search').click();
+							})
+						});
+					}  else if (obj.event === 'chart') { // 监听删除操作
+						var index = layer.open({
+							title: '统计报表',
+							type: 2,
+							shade: 0.2,
+							maxmin: true,
+							shadeClose: true,
+							area: ['100%', '100%'],
+							content: './chart.html',
+						});
+						$(window).on("resize", function() {
+							layer.full(index);
+						});
+						return false;
+					}
+				});
+				// 表格按钮监听
+				table.on('tool(currentTableFilter)', function(obj) {
+					console.log(obj)
+					var data = obj.data;
+					if (obj.event==='info'){
+						var index = layer.open({
+							title: '查看',
+							type: 2,
+							shade: 0.2,
+							maxmin: true,
+							shadeClose: true,
+							area: ['100%', '100%'],
+							content: './info.html?id=' + obj.data.id,
+						});
+						$(window).on("resize", function() {
+							layer.full(index);
+						});
+					}else if (obj.event === 'edit') {
+						var index = layer.open({
+							title: '编辑',
+							type: 2,
+							shade: 0.2,
+							maxmin: true,
+							shadeClose: true,
+							area: ['100%', '100%'],
+							content: './edit.html?id=' + obj.data.id,
+						});
+						$(window).on("resize", function() {
+							layer.full(index);
+						});
+						return false;
+					} else if (obj.event === 'delete') {
+						layer.confirm('是否删除该数据？', function(index) {
+							http.requestJson('chukujilu/delete', 'post' , [obj.data.id], function(res) {
+								layer.close(index);
+								obj.del();
+							})
+						});
+					} else if (obj.event === 'sh') {
+						localStorage.setItem('shObject', JSON.stringify(obj.data));
+						var index = layer.open({
+							title: '审核',
+							type: 2,
+							shade: 0.2,
+							maxmin: true,
+							shadeClose: true,
+							area: ['50%', '50%'],
+							content: '../common/sh.html?tablename=chukujilu',
+						});
+					} else if (obj.event === 'pay') {
+						localStorage.setItem('payObject', JSON.stringify(obj.data));
+						var index = layer.open({
+							title: '支付',
+							type: 2,
+							shade: 0.2,
+							maxmin: true,
+							shadeClose: true,
+							area: ['80%', '80%'],
+							content: '../common/pay.html?tablename=chukujilu',
+						});
+					}
+									});
+			});
+		</script>
+		<script>
+
+		</script>
+
+	</body>
+</html>

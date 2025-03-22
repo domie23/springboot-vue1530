@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>后台管理-登陆</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<!--[if lt IE 9]>
+		<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+		<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+		<style>
+			body {
+				background-image:url("../../images/bg.jpg");height:100%;width:100%;
+			}
+			#container{height:100%;width:100%;}
+			input:-webkit-autofill {
+				-webkit-box-shadow:inset 0 0 0 1000px #fff;background-color:transparent;
+			}
+			.admin-login-background {
+				width:500px;
+				height:100%;
+				position:absolute;
+				right:0;
+				top:0;
+				background: #FFFFFF;
+				padding: 0 50px;
+			}
+			.admin-header {
+				text-align:center;
+				margin-bottom:130px;
+				margin-top: 30px;
+				font-weight:bold;
+				font-size:25px;
+				color:#515151;
+			}
+			.admin-input {
+				border-top-style:none;
+				border-right-style:solid;
+				border-bottom-style:solid;
+				border-left-style:solid;
+				height:50px;
+				width:100%;
+				padding-bottom:0px;
+				padding-left: 50px;
+			}
+			.admin-input::-webkit-input-placeholder {
+				color:#40E4E5  
+			}
+			.layui-icon-username {
+				color:#40E4E5 !important;
+			}
+			.layui-icon-username:hover {
+				color:#40E4E5 !important;
+			}
+			.layui-icon-password {
+				color:#40E4E5!important;
+			}
+			.layui-icon-password:hover {
+				color:#40E4E5 !important;
+			}
+			.admin-input-username {
+				border-top-style:solid;
+				border-radius:10px 10px 0 0;
+			}
+			.admin-input-verify {
+				border-radius:0 0 10px 10px;
+			}
+			.admin-button {
+				margin-top:20px;
+				font-weight:bold;
+				font-size:18px;
+				width:100%;
+				height:50px;
+				border-radius:5px;
+				background-color:#40E4E5;
+				border:1px solid #40E4E5;
+			}
+			.admin-icon {
+				margin-top:10px;
+				margin-left: 10px;
+				font-size:30px;
+			}
+			i {
+				position:absolute;
+			}
+			.layui-form-radio * {
+				font-size: 14px;
+				padding-left: 30px;
+			}
+			.layui-form-radio>i {
+				margin-left:-30px;
+			}
+			.layui-form-item{
+				margin-top: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container layui-anim layui-anim-upbit">
+			<div></div>
+			<div class="admin-login-background" id="app">
+				<div class="admin-header">
+					<span>{{projectName}}登录</span>
+				</div>
+				<form class="layui-form" action="">
+					<div>
+						<i class="layui-icon layui-icon-username admin-icon"></i>
+						<input type="text" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input admin-input admin-input-username"
+						 value="admin">
+					</div>
+					<div>
+						<i class="layui-icon layui-icon-password admin-icon"></i>
+						<input type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input admin-input"
+						 value="123456">
+					</div>
+					<div style="background: #FFFFFF;padding: 10px;border-radius: 0 0 10px 10px;">
+						<input v-for="item in menus" v-model="rulesForm.role" v-bind:key="item.roleName" type="radio" name="role" :value="item.tableName"
+						 :title="item.roleName">
+					</div>
+					<button class="layui-btn admin-button" lay-submit="" lay-filter="login">登 陆</button>
+					<div class="layui-form-item">
+						<a v-if="item.tableName!='users'" v-for="(item,index) in menus" v-bind:key="index" style="margin-right:10px" href="javascript:void(0)"
+						 @click="register(item.tableName)">注册{{item.roleName.replace('注册','')}}</a>
+					</div>
+				</form>
+			</div>
+		</div>
+		<script src="../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js" charset="utf-8"></script>
+		<script src="../../js/menu.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+					rulesForm: {
+						username: "",
+						password: "",
+						role: ""
+					},
+					tableName: "",
+					menus: []
+				},
+				mounted: function() {
+					// 获取菜单信息
+					let menus = getAllMenu();
+					this.menus = menus;
+				},
+				created: function() {},
+				updated: function() {},
+				watch: {},
+				methods: {
+					// 注册页面
+					register(tableName) {
+						window.location.href = '../' + tableName + '/register.html?tablename=' + tableName;
+					}
+				}
+			});
+
+			layui.define(['form', 'jquery', 'http', 'layer'], function() {
+				var jquery = layui.jquery;
+				var form = layui.form;
+				var http = layui.http;
+				var layer = layui.layer;
+				// 登录过期的时候，跳出ifram框架
+				if (top.location != self.location) top.location = self.location;
+				// 进行登录操作
+				form.on('submit(login)', function(data) {
+					data = data.field;
+					console.log(data);
+					if (!data.username) {
+						layer.msg('用户名不能为空');
+						return false;
+					}
+					if (!data.password) {
+						layer.msg('密码不能为空');
+						return false;
+					}
+					if (!data.role) {
+						layer.msg('用户角色不能为空');
+						return false;
+					}
+					http.request(data.role + '/login', 'post', data, function(res) {
+						layer.msg('登录成功', {
+							time: 2000,
+							icon: 6
+						});
+						// 登录凭证
+						localStorage.setItem('Token', res.token);
+						localStorage.setItem('role', jquery('input[name=role]:checked').attr('title'));
+						// 当前登录用户角色
+						localStorage.setItem('userTable', data.role);
+						localStorage.setItem('sessionTable', data.role);
+						// 用户名称
+						localStorage.setItem('adminName', data.username);
+						http.request(data.role + '/session', 'get', {}, function(res) {
+							// 用户id
+							localStorage.setItem('userid', res.data.id);
+							// 路径访问设置
+							window.location.href = '../../index.html';
+						})
+					});
+					return false;
+				});
+			});
+		</script>
+	</body>
+</html>

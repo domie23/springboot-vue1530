@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>试卷表</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+		<style>
+			body {
+            	background-color: #ffffff;
+        	}
+    </style>
+	</head>
+	<body>
+		<form class="layui-form layui-form-pane" lay-filter="myForm" id="app">
+			<input type="hidden" name="id" id="id" v-model="detail.id" />
+			<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">试卷名称：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.name" type="text" name="name" id="name" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">考试时长/分钟：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.time" type="text" name="time" id="time" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">试卷状态：</label>
+					<div class="layui-input-block">
+						<select v-model="detail.status" name="status" lay-verify="required">
+							<option value=""></option>
+							<option value="0">禁用</option>
+							<option value="1">启用</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="text-align: right;margin-right: 30px;">
+					<button class="layui-btn btn-submit" lay-submit lay-filter="*">提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</form>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/utils.js" charset="utf-8"></script>
+		<script src="../../js/validate.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+
+
+		<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+					detail: {
+						name: '',
+						time: '',
+						status: '',
+					}
+				},
+				updated: function() {
+					layui.form.render('select', 'myForm');
+				},
+				computed: {},
+				methods: {
+					jump(url) {
+						jump(url)
+					}
+				}
+			})
+
+			layui.use(['layer', 'element', 'carousel', 'jquery', 'form', 'upload', 'http', 'laydate', 'tinymce'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var carousel = layui.carousel;
+				var http = layui.http;
+				var jquery = layui.jquery;
+				var form = layui.form;
+				var upload = layui.upload;
+				var laydate = layui.laydate;
+				var tinymce = layui.tinymce
+
+				// 提交
+				form.on('submit(*)', function(data) {
+					data = data.field;
+					// 数据校验
+					if (!data.name) {
+						layer.msg('试卷名称不能为空', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!data.time) {
+						layer.msg('考试时长不能为空', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!isIntNumer(data.time)) {
+						layer.msg('考试时长应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!data.status) {
+						layer.msg('试卷状态不能为空', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!isIntNumer(data.status)) {
+						layer.msg('试卷状态，0：禁用 1：启用应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					// 转秒
+					data.time = data.time * 60;
+					// 提交数据
+					http.requestJson('exampaper' + '/update', 'post', data, function(res) {
+						layer.msg('提交成功', {
+							time: 2000,
+							icon: 6
+						}, function() {
+							window.parent.location.reload();
+						});
+					});
+					return false
+				});
+
+				http.request('exampaper/info/' + http.getParam('id'), 'get', {}, function(res) {
+					form.val(res.data)
+					res.data.time = res.data.time / 60;
+					vue.detail = res.data;
+				})
+
+			});
+		</script>
+	</body>
+</html>

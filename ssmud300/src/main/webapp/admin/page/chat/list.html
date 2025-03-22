@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>客服聊天表</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+	</head>
+	<body>
+		<div class="layuimini-container">
+			<div class="layuimini-main">
+				<!-- <div style="margin: 10px 10px 10px 10px">
+					<form class="layui-form layui-form-pane" action="">
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<button id="btn-search" type="submit" class="layui-btn layui-btn-primary" lay-submit lay-filter="data-search-btn"><i
+									 class="layui-icon"></i>
+									搜 索</button>
+							</div>
+						</div>
+					</form>
+				</div> -->
+				<table class="layui-hide" id="mytable" lay-filter="currentTableFilter"></table>
+
+				<script type="text/html" id="currentTableBar">
+					{{# if (isAuth('kefuguanli','修改')){}}
+					<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="edit">回复</a>
+					{{#}}}
+				</script>
+				
+				<script type="text/html" id="isreplyTableBar">
+					{{# if (d.isreply==1){ }}
+					<a class="layui-btn layui-btn-xs layui-btn-primary">待回复</a>
+					{{# } }}
+					{{# if (d.isreply==0){ }}
+					<a class="layui-btn layui-btn-xs layui-btn-warm">已恢复</a>
+					{{# } }}
+				</script>
+
+			</div>
+		</div>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/menu.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			layui.use(['form', 'table', 'laydate', 'http'], function() {
+				var $ = layui.jquery;
+				var form = layui.form;
+				var table = layui.table;
+				var http = layui.http;
+				var laydate = layui.laydate;
+				table.render({
+					elem: '#mytable',
+					url: http.baseurl + 'chat/page?sort=addtime&order=desc&isreply=1',
+					toolbar: '#mytoolbar',
+					defaultToolbar: ['filter', 'exports', 'print'],
+					headers: {
+						'Token': localStorage.getItem("Token")
+					},
+					request: {
+						pageName: 'page', //页码的参数名称，默认：page
+						limitName: 'limit' //每页数据量的参数名，默认：limit
+					},
+					parseData: function(res) { //res 即为原始返回的数据
+						if (res.code == 401) {
+							window.parent.location.href = '../login/login.html'
+						}
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.data.total, //解析数据长度
+							"data": res.data.list //解析数据列表
+						};
+					},
+					cols: [
+						[{
+								type: "checkbox",
+								width: 50,
+								fixed: "left"
+							},
+							{
+								field: 'userid',
+								title: '用户ID',
+								sort: true
+							},
+							{
+								field: 'ask',
+								title: '提问',
+								minWidth: '150',
+								align: "center"
+							},
+							{
+								field: 'isreply',
+								title: '是否回复',
+								minWidth: '150',
+								align: "center",
+								templet: '#isreplyTableBar',
+							},
+							{
+								title: '操作',
+								width: 200,
+								templet: '#currentTableBar',
+								align: "center"
+							}
+						]
+					],
+					limits: [10, 15, 20, 25, 50, 100],
+					limit: 15,
+					page: true
+				});
+
+				// 监听搜索操作
+				form.on('submit(data-search-btn)', function(data) {
+
+					var param = {}
+
+					//执行搜索重载
+					table.reload('mytable', {
+						page: {
+							curr: 1
+						},
+						where: param,
+						done: function(res, curr, count) {
+							this.where = {};
+						}
+					}, 'data');
+					return false;
+				});
+				
+				// 表格按钮监听
+				table.on('tool(currentTableFilter)', function(obj) {
+					console.log(obj)
+					var data = obj.data;
+					if (obj.event === 'info') {
+						var index = layer.open({
+							title: '查看',
+							type: 2,
+							shade: 0.2,
+							maxmin: true,
+							shadeClose: true,
+							area: ['60%', '60%'],
+							content: './info.html?id=' + obj.data.userid,
+						});
+						
+					} else if (obj.event === 'edit') {
+						var index = layer.open({
+							title: '编辑',
+							type: 2,
+							shade: 0.2,
+							maxmin: true,
+							shadeClose: true,
+							area: ['60%', '70%'],
+							content: './edit.html?id=' + obj.data.userid,
+						});
+						
+						return false;
+					} else if (obj.event === 'delete') {
+						layer.confirm('是否删除该数据？', function(index) {
+							http.requestJson('chat/delete', 'post', [obj.data.id], function(res) {
+								layer.close(index);
+								obj.del();
+							})
+						});
+					}
+				});
+			});
+		</script>
+		<script>
+
+		</script>
+
+	</body>
+</html>

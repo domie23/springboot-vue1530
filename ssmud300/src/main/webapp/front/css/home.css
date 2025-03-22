@@ -1,0 +1,76 @@
+.con2 {
+	width: 50%;
+	height: 298px;
+	margin: 24px auto 0;
+	overflow: hidden;
+	margin-left: 25%;
+}
+
+.con2_center {
+	float: left;
+	width: 442px;
+	height: 298px;
+	overflow: hidden;
+}
+
+.con2_right {
+	float: right;
+	width: 245px;
+	height: auto;
+	overflow: hidden;
+	padding-top: 27px;
+}
+
+.con2_title2 {
+	width: 100%;
+	height: 49px;
+	overflow: hidden;
+	background: url(../img/title2.jpg) 0 bottom no-repeat;
+}
+
+.con2_about {
+	width: 410px;
+	height: 210px;
+	margin: 12px auto 0;
+	overflow: hidden;
+	font: 14px/32px "microsoft yahei";
+	color: #3c4f8c;
+}
+
+.con2_about p {
+	margin: 12px auto 0;
+	overflow: hidden;
+	font: 14px/32px "microsoft yahei";
+	color: #3c4f8c;
+}
+
+.con2_right a {
+	display: block;
+	width: 245px;
+	height: 75px;
+	background: url(../img/con2_btns.jpg) 0 0 no-repeat;
+	overflow: hidden;
+	margin-bottom: 8px;
+}
+
+.con2_btn1 span {
+	font: 700 22px/1 "microsoft yahei";
+	color: #dce4ff;
+	margin-top: 20px;
+	text-indent: 22px;
+	display: block;
+}
+
+.con2_btn1 i {
+	font: 700 16px/1.2 "microsoft yahei";
+	color: #5a74c5;
+	text-indent: 48px;
+	display: block;
+	font-style: italic;
+	text-transform: uppercase;
+}
+
+.banner_img1{
+	width: 80%;
+	margin-left: 11%;
+}

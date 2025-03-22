@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>客服聊天表</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" type="text/css" href="../../elementui/elementui.css" />
+		<style>
+			body {
+				background-color: #ffffff;
+			}
+			.chat-content {
+			  margin-left: 80px;
+			  padding-bottom: 60px;
+			  width: 500px;
+			  margin-bottom: 30px;
+			  max-height: 300px;
+			  height: 300px;
+			  overflow-y: scroll;
+			  border: 1px solid #eeeeee;
+			}
+			.left-content {
+			  float: left;
+			  margin-bottom: 10px;
+			  padding: 10px;
+			}
+			.right-content {
+			  float: right;
+			  margin-bottom: 10px;
+			  padding: 10px;
+			}
+			.clear-float {
+			  clear: both;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="app">
+			<el-form class="detail-form-content" ref="ruleForm" :model="ruleForm" :rules="rules" label-width="80px">
+				<div class="chat-content">
+					<div v-bind:key="item.id" v-for="item in dataList">
+						<div v-if="item.ask" class="left-content">
+							<el-alert class="text-content" :title="item.ask" :closable="false" type="success"></el-alert>
+						</div>
+						<div v-else class="right-content">
+							<el-alert class="text-content" :title="item.reply" :closable="false" type="warning"></el-alert>
+						</div>
+						<div class="clear-float"></div>
+					</div>
+				</div>
+				<div class="clear-float"></div>
+				<el-form-item label="回复" prop="reply">
+					<el-input v-model="ruleForm.reply" placeholder="回复" clearable></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="onSubmit">回复</el-button>
+					<el-button @click="back()">返回</el-button>
+				</el-form-item>
+			</el-form>
+		</div>
+
+		<!-- layui -->
+		<script src="../../lib/layui-v2.5.5/layui.js"></script>
+		<!-- vue -->
+		<script src="../../js/vue.js"></script>
+		<!-- elementui -->
+		<script src="../../elementui/elementui.js"></script>
+		<!-- 扩展插件配置信息 -->
+		<script src="../../js/lay-config.js"></script>
+		<!-- 工具方法 -->
+		<script src="../../js/utils.js"></script>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data() {
+					return {
+						id: "",
+						ruleForm: {},
+						dataList: [],
+						rules: {
+							reply: [{
+								required: true,
+								message: "回复内容不能为空",
+								trigger: "blur"
+							}]
+						},
+						inter: null
+					};
+				},
+				methods: {
+					// 初始化
+					init(id) {
+						this.id = id;
+						this.getList();
+						var that = this;
+						var inter = setInterval(function() {
+							that.getList();
+						}, 3000)
+						this.inter = inter;
+					},
+					getList() {
+						layui.http.request('chat/page?sort=addtime&order=asc&userid=' + this.id,
+							'get', {}, (data) => {
+								this.ruleForm.userid = this.id;
+								this.dataList = data.data.list;
+							}
+						);
+					},
+					// 提交
+					onSubmit() {
+						this.$refs["ruleForm"].validate(valid => {
+							if (valid) {
+								layui.http.requestJson('chat/save', 'post', this.ruleForm, (res) => {
+									this.getList();
+									this.ruleForm.reply = "";
+								});
+								// this.$http({
+								// 	url: this.$api.chatsave,
+								// 	method: "post",
+								// 	data: this.ruleForm
+								// }).then(({
+								// 	data
+								// }) => {
+								// 	if (data && data.code === 0) {
+								// 		this.$message({
+								// 			message: "操作成功",
+								// 			type: "success",
+								// 			duration: 1500,
+								// 			onClose: () => {
+								// 				this.getList();
+								// 				this.ruleForm.reply = "";
+								// 			}
+								// 		});
+								// 	} else {
+								// 		this.$message.error(data.msg);
+								// 	}
+								// });
+							}
+						});
+					},
+					// 返回
+					back() {
+						if (this.inter) {
+							clearInterval(this.inter);
+						}
+						window.parent.location.reload();
+					}
+				}
+			})
+
+			layui.use(['layer', 'element', 'http', 'jquery'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var http = layui.http;
+				var jquery = layui.jquery;
+
+				var id = http.getParam('id');
+				app.init(id);
+			});
+		</script>
+	</body>
+</html>

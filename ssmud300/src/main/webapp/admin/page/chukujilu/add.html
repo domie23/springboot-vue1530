@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>出库记录</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+				<style>
+			body {
+            	background-color: #ffffff;
+        	}
+    </style>
+	</head>
+	<body>
+		<form class="layui-form layui-form-pane" lay-filter="myForm" id="app">		
+									<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">药材编号：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.yaocaibianhao" type="text" name="yaocaibianhao" id="yaocaibianhao" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">药材名称：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.yaocaimingcheng" type="text" name="yaocaimingcheng" id="yaocaimingcheng" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">药材类型：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.yaocaileixing" type="text" name="yaocaileixing" id="yaocaileixing" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">药材库存：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.yaocaikucun" type="text" name="yaocaikucun" id="yaocaikucun" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+												<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">出库时间：</label>
+					<div class="layui-input-block">
+						<input type="text" name="chukushijian" id="chukushijian" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+									
+																																	
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="text-align: right;margin-right: 30px;">
+					<button class="layui-btn btn-submit" lay-submit lay-filter="*">提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</form>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/utils.js" charset="utf-8"></script>
+		<script src="../../js/validate.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		
+		
+		<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+                    																																																							detail: {
+                                                                        yaocaibianhao: '',
+                                                                                                yaocaimingcheng: '',
+                                                                                                yaocaileixing: '',
+                                                                                                yaocaikucun: '',
+                                                                                                chukushijian: '',
+                                                                    },
+					corss: false
+				},
+				updated: function() {
+					layui.form.render('select', 'myForm');
+				},
+                computed: {
+                                                                                                                                                                                                                                                                                                                                                },
+				methods: {
+					jump(url) {
+						jump(url)
+					}
+				}
+			})
+
+			layui.use(['layer', 'element', 'carousel', 'jquery', 'form', 'upload', 'http' ,'laydate','tinymce'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var carousel = layui.carousel;
+				var http = layui.http;
+				var jquery = layui.jquery;
+				var form = layui.form;
+				var upload = layui.upload;
+				var laydate = layui.laydate;
+                var tinymce = layui.tinymce
+
+				
+                																																								laydate.render({
+					elem: '#chukushijian',
+					type: 'datetime'
+				});
+                								
+                                // session独取
+				let table = localStorage.getItem("userTable");
+				http.request(`${table}/session`, 'get', {}, function(data) {
+					// 表单赋值
+					//form.val("myForm", data.data);
+					data = data.data
+					for(var key in data){
+						vue.detail[`${key}`] = data[`${key}`]
+					}
+					vue.detail[`userid`] = localStorage.getItem('userid')
+				});
+                
+                // 跨表计算
+                if(http.getParam('corss')){
+					vue.corss = true
+					var obj = JSON.parse(localStorage.getItem('crossObj'));
+					for(var key in obj){
+						vue.detail[`${key}`] = obj[`${key}`]
+					}
+				}
+				
+                																																vue.detail.yaocaikucun = 0
+																
+				// 提交
+				form.on('submit(*)', function(data) {
+					data = data.field;
+                    // 数据校验
+					                    					                                                                                                                                                                					                                                                                                                                                                					                                                                                                                                                                					                                        if(!isIntNumer(data.yaocaikucun)){
+                        layer.msg('药材库存应输入整数', {
+							time: 2000,
+							icon: 5
+						});
+                        return false
+                    }
+                                                                                                                                                                					                                                                                                                                            
+					// 跨表计算
+					                                                                                                                                                                var obj = JSON.parse(localStorage.getItem('crossObj'));
+                    var table = localStorage.getItem('crossTable');
+                    obj.yaocaikucun = obj.yaocaikucun - vue.detail.yaocaikucun
+                    if(obj.yaocaikucun<0){
+                        layer.msg(`药材库存不足`, {
+					 		time: 2000,
+					 		icon: 5
+					 	});
+                        return false
+                    }
+                    http.requestJson(`${table}/update`,'post',obj,(res)=>{});
+                                                                                					
+                    // 比较大小
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                					
+					// 提交数据
+					http.requestJson('chukujilu' + '/save', 'post', data, function(res) {
+					 	layer.msg('提交成功', {
+					 		time: 2000,
+					 		icon: 6
+					 	}, function() {
+					 		window.parent.location.reload();
+						});
+					 });
+
+					return false
+				});
+
+			});
+		</script>
+	</body>
+</html>

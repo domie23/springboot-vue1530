@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>论坛表</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+		<style>
+			body {
+            	background-color: #ffffff;
+        	}
+    </style>
+	</head>
+	<body>
+		<form class="layui-form layui-form-pane" lay-filter="myForm" id="app">
+			<input type="hidden" :value="detail.id" id="id" name="id" />
+			<input type="hidden" :value="detail.userid" id="userid" name="userid" />
+			<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">帖子标题：</label>
+					<div class="layui-input-block">
+						<input v-model="detail.title" type="text" name="title" id="title" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">发布人：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.username" type="text" name="username" id="username" autocomplete="off"
+						 class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">类型：</label>
+					<div class="layui-input-block">
+						<input type="radio" name="isdone" value="开放" title="公开" checked>
+						<input type="radio" name="isdone" value="关闭" title="私人">
+						<!-- <input v-model="detail.isdone" type="text" name="isdone" id="isdone" autocomplete="off" class="layui-input"> -->
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-col-xs12 layui-col-md12">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">内容：</label>
+					<div class="layui-input-block" style="padding: 10px;">
+						<textarea v-model="detail.content" name="content" id="content">请输入内容</textarea>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="text-align: right;margin-right: 30px;">
+					<button class="layui-btn btn-submit" lay-submit lay-filter="*">提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</form>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/utils.js" charset="utf-8"></script>
+		<script src="../../js/validate.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+					detail: {
+						title: '',
+						content: '',
+						parentid: '',
+						userid: '',
+						username: '',
+						isdone: '',
+					}
+				},
+				updated: function() {
+					layui.form.render('select', 'myForm');
+				},
+				computed: {},
+				methods: {
+					jump(url) {
+						jump(url)
+					}
+				}
+			})
+
+			layui.use(['layer', 'element', 'carousel', 'jquery', 'form', 'upload', 'laydate', 'tinymce', 'http'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var carousel = layui.carousel;
+				var http = layui.http;
+				var jquery = layui.jquery;
+				var form = layui.form;
+				var upload = layui.upload;
+				var laydate = layui.laydate;
+				var tinymce = layui.tinymce
+
+				// 初始化编辑器
+				var edit = tinymce.render({
+					elem: "#content",
+					height: 600,
+					images_upload_handler: function(blobInfo, succFun, failFun) {
+						var xhr, formData;
+						var file = blobInfo.blob(); //转化为易于理解的file对象
+						xhr = new XMLHttpRequest();
+						xhr.withCredentials = false;
+						xhr.open('POST', http.baseurl + 'file/upload');
+						xhr.setRequestHeader("Token", localStorage.getItem('Token')); //设置请求头
+						xhr.onload = function() {
+							var json;
+							if (xhr.status != 200) {
+								failFun('HTTP Error: ' + xhr.status);
+								return;
+							}
+							json = JSON.parse(xhr.responseText);
+							if (!json || typeof json.file != 'string') {
+								failFun('Invalid JSON: ' + xhr.responseText);
+								return;
+							}
+							succFun(http.baseurl + '/upload/' + json.file);
+						};
+						formData = new FormData();
+						formData.append('file', file, file.name); //此处与源文档不一样
+						xhr.send(formData);
+					}
+				}, (opt) => {
+
+				});
+
+				// 提交
+				form.on('submit(*)', function(data) {
+					data = data.field;
+					// 获取富文本的内容
+					var content = tinymce.get('#content').getContent()
+					data.content = content;
+					// 数据校验
+					if (!data.content) {
+						layer.msg('帖子内容不能为空', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+					if (!data.userid) {
+						layer.msg('用户不能为空', {
+							time: 2000,
+							icon: 5
+						});
+						return false
+					}
+
+					// 提交数据
+					http.requestJson('forum' + '/update', 'post', data, function(res) {
+						layer.msg('提交成功', {
+							time: 2000,
+							icon: 6
+						}, function() {
+							window.parent.location.reload();
+						});
+					});
+
+					return false
+				});
+
+				var id = http.getParam('id');
+				http.request('forum/info/' + id, 'get', {}, (res) => {
+					form.val(res.data)
+					tinymce.get('#content').setContent(res.data.content)
+					vue.detail = res.data;
+				})
+
+			});
+		</script>
+	</body>
+</html>

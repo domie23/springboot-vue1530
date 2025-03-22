@@ -1,0 +1,126 @@
+.layuimini-content-page{background-color:#f9f9f9!important;}
+.layuimini-container {border:1px solid #f9f9f9;border-radius:5px;background-color:#f9f9f9}
+.layuimini-main {margin:10px 10px 10px 10px;border:5px solid #ffffff;border-radius:5px;background-color:#ffffff}
+.layui-breadcrumb>* {font-size: 13px;!important;}
+
+/**必填红点 */
+.layuimini-form>.layui-form-item>.required:after {content:'*';color:red;position:absolute;margin-left:4px;font-weight:bold;line-height:1.8em;top:6px;right:5px;}
+.layuimini-form>.layui-form-item>.layui-form-label {width:120px !important;}
+.layuimini-form>.layui-form-item>.layui-input-block {margin-left:150px !important;}
+.layuimini-form>.layui-form-item>.layui-input-block >tip {display:inline-block;margin-top:10px;line-height:10px;font-size:10px;color:#a29c9c;}
+
+/**搜索框*/
+.layuimini-container .table-search-fieldset {margin: 0;border: 1px solid #e6e6e6;padding: 10px 20px 5px 20px;color: #6b6b6b;}
+
+.layui-table tbody tr:hover,
+.layui-table thead tr,
+.layui-table-click,
+.layui-table-header,
+.layui-table-hover,
+.layui-table-mend,
+.layui-table-patch,
+.layui-table-tool,
+.layui-table-total,
+.layui-table-total tr,
+.layui-table[lay-even] tr:nth-child(even) {
+	background-color: #FFFFFF;
+}
+
+.img-content {
+	display: flex;
+}
+
+.img-content .img-item {
+	position: relative;
+}
+
+.img-content .img-item img {
+	width: 80px;
+	height: 70px;
+	margin-right: 10px;
+	object-fit: cover;
+}
+
+.img-content .img-item .mask:hover {
+	opacity: 1;
+}
+
+
+.img-content .img-item .mask {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 80px;
+	height: 70px;
+	background: rgba(0,0,0,0.6);
+	color: #ffffff;
+	opacity: 0;
+	text-align: center;
+}
+
+.img-content .img-item .mask .icon{
+	width: 25px;
+	height: 25px;
+	margin-left: 10px;
+	margin-top: 20px;
+}
+
+.layui-table-cell {
+    height: 50px;
+    line-height: 50px;
+}
+.layui-form-pane .layui-form-label {
+    width: 160px;
+}
+.layui-form-pane .layui-input-block {
+    margin-left: 160px;
+}
+
+.layui-nav * {
+    font-size: 14px;
+}
+
+.layui-btn {
+    background-color: #2196F3 !important;
+	color: #FFFFFF !important;
+	border-radius: 30px;
+	height: 40px;
+	min-width: 40px;
+	border-color: #2196F3;
+}
+
+.layui-btn-danger{
+	background-color: #FF0000 !important;
+}
+
+.layui-btn-warm{
+	background-color: #FFB800 !important;
+}
+
+.layui-form-pane .layui-form-label {
+    background-color: #2196F3;
+	color: #FFFFFF;
+	border: 1px dotted #2196F3;
+}
+
+.layui-btn-xs {
+    line-height: 40px;
+}
+
+.layui-table td, .layui-table th, .layui-table-col-set, .layui-table-fixed-r, .layui-table-grid-down, .layui-table-header, .layui-table-page, .layui-table-tips-main, .layui-table-tool, .layui-table-total, .layui-table-view, .layui-table[lay-skin=line], .layui-table[lay-skin=row] {
+    /* border-width: 1px; */
+    /* border-style: solid; */
+    /* border-color: #2196F3; */
+}
+
+.layui-badge-rim, .layui-colla-content, .layui-colla-item, .layui-collapse, .layui-elem-field, .layui-form-pane .layui-form-item[pane], .layui-form-pane .layui-form-label, .layui-input, .layui-layedit, .layui-layedit-tool, .layui-quote-nm, .layui-select, .layui-tab-bar, .layui-tab-card, .layui-tab-title, .layui-tab-title .layui-this:after, .layui-textarea {
+    /* border-color: #2196F3; */
+}
+
+.layui-layout-admin .layui-side {
+    top: 150px !important;
+}
+
+.layuimini-tool {
+    left: 290px;
+}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>审核</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+		<style>
+			body {
+            	background-color: #ffffff;
+        	}
+    </style>
+	</head>
+	<body>
+		<form class="layui-form layui-form-pane" lay-filter="myForm" id="app">
+			
+			<input type="hidden" :value="detail.id" id="id" name="id" />
+			
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">审核状态：</label>
+					<div class="layui-input-block">
+						<select name="sfsh" id="sfsh">
+							<option value="">请选择</option>
+							<option value="是">通过</option>
+							<option value="否">不通过</option>
+						</select>
+						<!-- <input v-model="detail.sfsh" type="text" name="sfsh" id="sfsh" autocomplete="off" class="layui-input"> -->
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">审核回复：</label>
+					<div class="layui-input-block">
+						<textarea v-model="shhf" name="shhf" id="shhf" placeholder="请输入内容" class="layui-textarea"></textarea>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class="layui-input-block" style="text-align: right;margin-right: 30px;">
+					<button class="layui-btn btn-submit" lay-submit lay-filter="*">提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+			
+		</form>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/utils.js" charset="utf-8"></script>
+		<script src="../../js/validate.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+					detail: {},
+					sfsh: '',
+					shhf: ''
+				},
+				updated: function() {
+					layui.form.render('select','myForm');
+				},
+				computed: {},
+				methods: {
+					jump(url) {
+						jump(url)
+					}
+				}
+			})
+
+			layui.use(['layer', 'element', 'carousel', 'jquery', 'form', 'upload', 'laydate', 'tinymce', 'http'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var carousel = layui.carousel;
+				var http = layui.http;
+				var jquery = layui.jquery;
+				var form = layui.form;
+				var upload = layui.upload;
+				var laydate = layui.laydate;
+				var tinymce = layui.tinymce
+				
+				// 审核表
+				var tablename = http.getParam('tablename');
+				// 审核数据
+				var shObject = JSON.parse(localStorage.getItem('shObject'));
+				// 数据赋值
+				vue.detail = shObject;
+				jquery('#sfsh').val(shObject.sfsh);
+				
+				// 提交
+				form.on('submit(*)', function(data) {
+					layer.confirm('是否确认审核？', function(index) {
+						data = data.field;
+						if (!data.sfsh) {
+							layer.msg('请选择审核状态', {
+								time: 2000,
+								icon: 5
+							});
+							return false
+						}
+						if (!data.shhf) {
+							layer.msg('请填写审核回复', {
+								time: 2000,
+								icon: 5
+							});
+							return false
+						}
+						shObject.sfsh = data.sfsh;
+						shObject.shhf = data.shhf;
+						// 提交数据
+						http.requestJson( tablename + '/update', 'post', shObject, function(res) {
+							layer.msg('操作成功', {
+								time: 2000,
+								icon: 6
+							}, function() {
+								window.parent.location.reload();
+							});
+						});
+						return false
+					});
+					return false
+				});
+
+			});
+		</script>
+	</body>
+</html>

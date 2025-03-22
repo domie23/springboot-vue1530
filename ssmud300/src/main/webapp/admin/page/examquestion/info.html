@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>试题表</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+		<link rel="stylesheet" href="../../css/public.css" media="all">
+		<style>
+			body {
+            	background-color: #ffffff;
+        	}
+    </style>
+	</head>
+	<body>
+		<form class="layui-form layui-form-pane" lay-filter="myForm" id="app">
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">试卷名称：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.papername" type="text" name="papername" id="papername" autocomplete="off"
+						 class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">试题名称：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.questionname" type="text" name="questionname" id="questionname"
+						 autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">分值：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.score" type="text" name="score" id="score" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">正确答案：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.answer" type="text" name="answer" id="answer" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">试题类型：</label>
+					<div class="layui-input-block">
+						<select v-model="detail.type" name="type" id="type">
+							<option value="">请选择</option>
+							<option value="0">单选题</option>
+							<option value="1">多选题</option>
+							<option value="2">判断题</option>
+							<option value="3">填空题</option>
+						</select>
+						<!-- <input disabled="disabled" v-model="detail.type" type="text" name="type" id="type" autocomplete="off" class="layui-input"> -->
+					</div>
+				</div>
+			</div>
+			<div class="layui-col-xs12 layui-col-md6">
+				<div class="layui-form-item" pane>
+					<label class="layui-form-label">试题排序：</label>
+					<div class="layui-input-block">
+						<input disabled="disabled" v-model="detail.sequence" type="text" name="sequence" id="sequence" autocomplete="off"
+						 class="layui-input">
+					</div>
+				</div>
+			</div>
+
+		</form>
+
+		<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+		<script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+		<script src="../../js/utils.js" charset="utf-8"></script>
+		<script src="../../js/validate.js" charset="utf-8"></script>
+		<script src="../../js/vue.js" charset="utf-8"></script>
+		<script>
+			var vue = new Vue({
+				el: '#app',
+				data: {
+					detail: {
+						paperid: '',
+						papername: '',
+						questionname: '',
+						options: '',
+						score: '',
+						answer: '',
+						analysis: '',
+						type: '',
+						sequence: '',
+					}
+				},
+				updated: function() {
+					layui.form.render('select', 'myForm');
+				},
+				computed: {},
+				methods: {
+					jump(url) {
+						jump(url)
+					}
+				}
+			})
+
+			layui.use(['layer', 'element', 'jquery', 'form', 'http'], function() {
+				var layer = layui.layer;
+				var element = layui.element;
+				var http = layui.http;
+				var jquery = layui.jquery;
+				var form = layui.form;
+
+				var id = http.getParam('id');
+				http.request('examquestion/info/' + id, 'get', {}, (res) => {
+					form.val(res.data)
+					vue.detail = res.data;
+				})
+
+			});
+		</script>
+	</body>
+</html>
